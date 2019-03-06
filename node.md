@@ -6,48 +6,47 @@
 # How to run
 ### Installation
 1. Download/Build last node version from the [repo](https://github.com/GEO-Protocol/GEO-network-client); <br/>
-You can follow the links provided in [releases changelogs](https://github.com/GEO-Protocol/GEO-network-client/blob/develop/RELEASES.md) to get desired version of the node build (currently, only BETA1 is available).
+You can follow the links provided in [releases changelogs](https://github.com/GEO-Protocol/GEO-network-client/blob/develop/RELEASES.md) to get desired version of the node build (currently only BETA1 is available).
 
 1. Move `geo_network_client` to the desired FS location. <br/>
 The default location for the node in `~/node/`, but you are free to chose any other location. <br/>
-If you are using provided [WM image](https://github.com/GEO-Protocol/GEO-network-client/blob/develop/RELEASES.md#beta-1) (or docker container) - it is already configured. No need to go through this step.
+If you are using provided [WM image](https://github.com/GEO-Protocol/GEO-network-client/blob/develop/RELEASES.md#beta-1) (or docker container) it is already configured. No need to go through this step.
 
 
 1. Prepeare the configuration. <br/>
-Please, follow instructions from a section "Configuration".
+Please, follow instructions from the "Configuration" section.
 
 1. Start the node: `./geo_network_client` <br/>
-In case of successfull fly node should report
+In case of successful fly node, you should report:
 * core and required subsystems initialisation messages;
 * current observers chain height.
 
 ![node_run.png](https://github.com/GEO-Protocol/Documentation/blob/master/resources/node_run.png)
 
-In case if node was not started as expected - please, refer to the `operations.log`. 
-Usually it contains some details abot the error occured. 
+In cases where the node has not started as expected, please refer to the `operations.log`. 
+Usually it contains some details about how the error occured. 
 
 After the first launch of the node, the following objects appear in the node’s directory:
-* The `io` directory, that contains two files: `storageDB` and `communicatorStorageDB`. 
-This two files stores all the node’s data: trustlines, keys, history, payments, routing tables, etc.
-* The `fifo` directory, that contains three files: `commands.fifo`, `results.fifo` and `events.fifo`. The node’s communication will happen through these files. 
+* The `io` directory, which contains two files: `storageDB` and `communicatorStorageDB`. 
+These two files store all the node’s data: trustlines, keys, history, payments, routing tables, etc.
+* The `fifo` directory, which contains three files: `commands.fifo`, `results.fifo` and `events.fifo`. The node’s communication will happen through these files. 
 * The `operations.log` file containing detailed log of network actions (still needs some polishing).
-* The `process.pid` file containing the `PID` of the runnig node.
+* The `process.pid` file containing the `PID` of the running node.
 <br/>
 <br/>
 
 ### Libraries required
 GEO Network Client uses `boost` libraries and `libsodium` for the cryptography. </br> 
-Please, enshure presense of this libraries in you env. before starting the node.
+Please, ensure presense of these libraries in you env. before starting the node.
 <br/>
 <br/>
 
 ### Configuration
 Configuration contains network interfaces that should be used by the node and reported to the rest of the network, 
-as well as addresses of the observers, that are expected to be present in the network.
+as well as addresses of the observers that are expected to be present on the network.
 
 **Note: Beta 1 release supports only static, publicly available IPv4 addresses.** <br/>
-So, in case if you are planning to try to launch several nodes and perform some operations between them, - 
-please, ensure, that all of them would be able to communicate to each other via `UDP/IPv4` interface.
+If you are planning to try to launch several nodes and perform some operations between them, please ensure, that all of them will be able to communicate with one another via `UDP/IPv4` interface.
 
 **Note: Beta 1 release supports only statically listed observers list** <br/>
 The protocol itself is expected to support dynamically formed observers list, provided by the GSR [#todo link to GSR description].
@@ -55,19 +54,19 @@ The protocol itself is expected to support dynamically formed observers list, pr
 </br>
 
 Configuration file is named `conf.json`. <br/> 
-It is required to be located **on the same FS level** as `geo_network_client`. </br>
+This is required to be located **on the same FS level** as `geo_network_client`. </br>
 ![node_settings_fs_level.png](https://github.com/GEO-Protocol/Documentation/blob/master/resources/node_settings_fs_level.png)
 
 
-The configuration file must contain addresses information of the node – `addresses`: 
+The configuration file must contain address information of the node – `addresses`: 
 all the addresses that identify the node (including ports, if related) and their types, as well as the list of the [Observers](https://github.com/GEO-Protocol/Observer) – `observers`. <br/>
 <br/>
 In the current version of the node only one type of addressing is supported – ipv4.<br/>
 </br>
 Currently, observers test. net is driven by only 4 observers. 
-It is fully enough for providing all necessary operations for the GEO nodes and the GEO Network Test net.
+It is enough for providing all necessary operations for the GEO nodes and the GEO Network testnet.
 At the moment, **observers do not check validity of the TSLs/Claims generated by the GEO Nodes**, 
-so this network is not suitable for production usage, but is able to provide observing functionality that fully covers BETA1 release needs. The production environment is expected to be driven by the 1024+ observers. 
+so this network is not suitable for production usage, but is able to provide observing functionality that fully covers Beta 1 release needs. The production environment is expected to be driven by the 1024+ observers. 
 
 _Configuration for the BETA1 test net:_
 ```
@@ -101,33 +100,33 @@ _Configuration for the BETA1 test net:_
 }
 ```
 </br>
-The node’s addresses will be used to identify the node and they will be stored at other nodes with which the current node will communicate in either way: opening a trustline – TL, making payments, etc. Therefore, changing the address of the node after it has already opened some TLs will lead to incorrect work with the corresponding nodes.
+The node’s addresses will be used to identify the node and they will be stored at other nodes with which the current node will communicate in various ways: opening a trustline – TL, making payments, etc. Therefore, changing the address of the node after it has already opened some TLs will lead to it working incorrectly with the corresponding nodes.
 
 
 </br>
 </br>
 
 # How to use the node
-Here we will describe several ways possible how to communicate with the node. <br/>
-For the simplicity reasons, the documentation is provided in format of tutorial.
+Here we will describe several possible ways to communicate with the node. <br/>
+For simplicity, the documentation is provided in the format of a tutorial.
 
 ## Basic overview
-Node represents _an account_ in GEO Network. <br/>
-_It is assumed, each one participant of the GEO Network would access the network via it's own node_. <br/>
+Each node represents _an account_ on the GEO Network. <br/>
+_It is assumed that each participant of the GEO Network will access the network via its own node_. <br/>
 In contrast to some other decentralized networks, GEO Network does not delegate calculations to the miners, 
-but assumes network participants would take part (only) in transactions, in which them are involved.
+but assumes network participants will take part (only) in transactions in which they are involved.
 
 GEO Network Client implements such a node and provides low-level API 
 for operations processing: assets transfers, trust-lines/channels accounting, etc.
 </br>
 </br>
-For the simplicity reasons, in this tutorial we would use provided WM image. 
+For simplicity, in this tutorial we will use the provided WM image. 
 You can find the latest images with latest node build in [GEO Network Client repo](https://github.com/GEO-Protocol/GEO-network-client) ("Releases" section of the description).
 <br/>
 
 ## VirtualBox configuration
-We would need SSH session to manipulate the nodes, so the WM should accept incoming TCP connections. <br/>
-The simples way to achieve it is to configure NAT Ports Forwarding for the destination WM.
+We will need SSH session to manipulate the nodes, so the WM should accept incoming TCP connections. <br/>
+The simplest way to achieve this is to configure NAT Ports Forwarding for the destination WM.
 
 <p align="center">
 <img src="https://github.com/GEO-Protocol/Documentation/blob/master/resources/wm_network_settings_1.png">
@@ -138,17 +137,17 @@ The simples way to achieve it is to configure NAT Ports Forwarding for the desti
 
 <p align="center">
 <img src="https://github.com/GEO-Protocol/Documentation/blob/master/resources/wm_network_settings_2.png">
-	Pord Forwarding Settings
+	Port Forwarding Settings
 </p>
 <br/>
 <br/>
 
 
 ## Network topology
-In this tutorial we would use 3 nodes: `node1`, `node2`, `node3`. <br/>
-We would use one WM to run all three nodes. You can follow this tutorial in the same way, or you can launch 3 different WMs and configure appropriate network layer so all the WMs would be able to communicate to each other WM.
+In this tutorial we will use 3 nodes: `node1`, `node2`, `node3`. <br/>
+We would use one WM to run all three nodes. You can follow this tutorial in the same way, or you can launch 3 different WMs and configure the appropriate network layer so all the WMs will be able to communicate with one another's WM.
 
-Each one node needs one SSH session to be launched in, and one more SSH session for the commands transferring and results fetching. So in total, we are opening 6 SSH sessions to the WM.
+Each node needs one SSH session to be launched in, and one more SSH session for command transferring and result fetching. So in total, we are opening 6 SSH sessions to the WM.
 
 <p align="center">
 <img src="https://github.com/GEO-Protocol/Documentation/blob/master/resources/ssh_1.png">
@@ -185,31 +184,30 @@ And make corresponding changes to the configuration files:
 
 
 Then, we need to launch the nodes. <br/>
-For it to be done, follow the next steps:
+For this to be done, follow these steps:
 
 1. Sitch to `node1` SSH sesssion and do: `cd ~/node1/ && ./geo_network_client`
 1. Sitch to `node2` SSH sesssion and do: `cd ~/node2/ && ./geo_network_client`
 1. Sitch to `node3` SSH sesssion and do: `cd ~/node3/ && ./geo_network_client`
 
-Please, refer to the "How to run" section of this doc for the details about how node could be started and what behaviour of it to expect in various cases.
+Please refer to the "How to run" section of this doc for details on how a node can be started and what behaviour to expect of it in various cases.
 
 
 ## Node communication
-There are 3 possible ways to communicate to the GEO node:
+There are 3 possible ways to communicate with the GEO node:
 1. **Via low-level GEO Node protocol** <br/>
-This is the most performant and the most flexible way of communication, but in the same time, the most complex one.
+This is the most performant and the most flexible way of communication, but at the same time, the most complex.
 This communication channel should be used in production environments or embedded systems 
-with maximum performance in mind, and to avoid addtional resource consupting layers of communication (for example, HTTP API).
+with maximum performance in mind, and to avoid addtional resource consuming layers of communication (for example, HTTP API).
 
-1. **Via command-line interface** [comming soon] <br/> 
-This interface provides ability to communicate with node from the console in mode "one command at a time". </br>
-It is useful during development, but it should not be considered to be used in production environments, 
-due to the limitations of concurent commands processing, and relatively high resouce usage per command execution.
+1. **Via command-line interface** [coming soon] <br/> 
+This interface provides the ability to communicate with a node from the console in "one command at a time" mode. </br>
+It is useful during development, but it should not be considered for use in production environments due to the limitations of concurrent command processing, and relatively high resouce usage per command execution.
 
-1. **Via JSON API** [comming soon] <br/>
-This interface provides ability to communicate with node via HTTP API and to process more than one command at a time. 
-It is useful during development, and also might be considered to be used in production environments, 
-that are configured for communication with only one, or several nodes.
+1. **Via JSON API** [coming soon] <br/>
+This interface provides the ability to communicate with a node via HTTP API and to process more than one command at a time. 
+It is useful during development, and also might be considered for use in production environments 
+that are configured for communication with only one or several nodes.
 
 
 # Low-level GEO Node protocol
@@ -217,15 +215,15 @@ that are configured for communication with only one, or several nodes.
 All commands have to be transferred to the `commands.fifo` pipe. 
 The node at the start opens this file for reading immediately, so once a command gets there, it will be processed at once.<br/>
 
-The results of the command execution will be written by the node into the `results.fifo` pipe. This file must be opened for reading **before the start of the node**, otherwise the node will freeze at the first attempt to write a result. Since we do not have the `results.fifo` pipe (as well as other files) initially, we have to run the node first to form all these files. Then we have to stop it, and all the next times we will have to open the `results.fifo` file for reading before the node start.<br/>
+The results of the command execution will be written by the node into the `results.fifo` pipe. This file must be opened for reading **before the start of the node**, otherwise the node will freeze at the first attempt to write a result. Since we do not have the `results.fifo` pipe (as well as other files) initially, we have to run the node first to form all these files. Then we have to stop it, and all subsequent times we will have to open the `results.fifo` file for reading before the node starts.<br/>
 <br/>
-The `events.fifo` file is planned for recording the node’s internal events (incoming payments, opening an outgoing TL, etc.). But this functionality is not implemented yet, so this file can be ignored so far.
+The `events.fifo` file is planned for recording the node’s internal events (incoming payments, opening an outgoing TL, etc.). But this functionality is not implemented yet, so this file can be ignored for now.
 
-All commands and results consist of plain text data separated by the tab symbol `\t`, and ends with the end of the line symbol `\n`. The command and the result start with a 16-byte `command UUID` (UUID4 hex representation) that should be generated by the command issuer.
+All commands and results consist of plain text data separated by the tab symbol `\t`, and end with the end of the line symbol `\n`. The command and the result start with a 16-byte `command UUID` (UUID4 hex representation) that should be generated by the command issuer.
 
-Each command consist of `command UUID`, command name, and comamnd arguments.
+Each command consists of `command UUID`, command name, and command arguments.
 
-You can use standard linux command `echo` to send command to the node directly from the shell: <br/>
+You can use standard linux command `echo` to send a command to the node directly from the shell: <br/>
 `echo -e "<command>" > fifo/commands.fifo` <br/>
 Argument `-e` forces `echo` to interpet `\t` as tab character and `\n` as line end character.
 <br/>
@@ -233,11 +231,11 @@ Argument `-e` forces `echo` to interpet `\t` as tab character and `\n` as line e
 
 ## How to read command result
 1. Move to the node directory: `cd ~/node` </br>
-1. Open `./fifo/results.fifo` for reading. It is a linux-pipe (fifo-file), so it would not open, until the node is not launched as well (pipe opens in read mode only if there is another process that has opened it for the writing). <br/> 
+1. Open `./fifo/results.fifo` for reading. It is a linux-pipe (fifo-file), so it will not open until the node is not launched as well (pipe opens in read mode only if there is another process that has opened it for writing). <br/> 
 `cat ./fifo/results.fifo` </br>
-In this case, `cat` would hang, until node would be launched and some command-results would be written.
+In this case, `cat` will hang until node is launched and some command-results are written.
 
-This approach might be combined with commands transferring in common shell in the next way:
+This approach might be combined with command transferring in the common shell in the following way:
 ```
 > cat fifo/results.fifo & # read results in background
 
@@ -257,12 +255,12 @@ INIT:contractors/trust-line
 
 |Argument|Description
 |---|---|
-|Number of contractor’s addresses| How many addresses of the contractor would be included into the cpmmand|
+|Number of contractor's addresses| How many addresses of the contractor will be included into the command|
 |Vector of addresses of the contractor| Vector of pairs `(address type; address)`. As was mentioned above, the node currently supports only one type of address: `IPv4`, and its type code is `12`|
 | Equivalent ID | ID if the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
 
-This command initialises a Trust Line with contractor. 
-The transaction involves both current node and contractor's node. Ensures cryptographic keys exchange.
+This command initialises a Trust Line with the contractor. 
+The transaction involves both current node and contractor's node. It ensures cryptographic key exchange.
 
 #### Example
 ```
@@ -272,7 +270,7 @@ The transaction involves both current node and contractor's node. Ensures crypto
 ![init_trust_line.png](https://github.com/GEO-Protocol/Documentation/blob/master/resources/init_trust_line.png)
 
 ### Response
-Code 200: OK, operation was performed well. No additional data is provided.
+Code 200: OK, the operation was performed well. No additional data is provided.
 <br/>
 <br/>
 <br/>
@@ -289,7 +287,7 @@ GET:contractors/trust-lines
 | Equivalent ID | ID if the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
 
 Returns no more than `Count` of Trust Lines that are present on the node and corresponds to the received `offset` and `equivalent`.
-`todo:` add link to te transaction in source code.
+`todo:` add link to the transaction in source code.
 
 ### Example
 ```
@@ -304,8 +302,8 @@ Returns no more than `Count` of Trust Lines that are present on the node and cor
   * Contractor’s ID
   * Contractor’s addresses
   * TL state
-  * Indication of the node's keys are present
-  * Indication of the contractor’s keys are rpesent
+  * Indication that the node's keys are present
+  * Indication that the contractor’s keys are rpesent
   * Incoming Trust Amount (ITA)
   * Outgoing Trust Amount (OTA)
   * Current Balance (CB)
@@ -326,12 +324,12 @@ SET:contractors/trust-lines
 |---|---|---|
 | Contractor ID | `uint32` | Internal ID of the neighbor node, obtained from the TL List. |
 | Amount |Pos. BinInt, <br/> up to 2^256| New value of the Outgoing Trust Amount (OTA). |
-| Equivalent ID | `uint32` | ID if the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
+| Equivalent ID | `uint32` | ID of the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
 
 This command sets/updates amount of outgoing Trust Line. <br/>
 It is expected that trust line to the contractor with corresponding ID is already present (initialised).
 Transaction involves both current node and contractor's node.
-`todo:` add link to te transaction in source code.
+`todo:` add link to the transaction in source code.
 
 **Note:** If you set a new OTA  value to 0, then the Outgoing Trust Line will be closed.
 
@@ -346,7 +344,7 @@ Change the OTA to the value of 5000 to the contractor with the ID 1 in the equiv
 
 ### Response
 Code 200: OK, operation was performed well. No additional data is provided. <br/>
-Code different than 200 indicates an error. Please, refer to the node's codes list for the details.
+Code different to 200 indicates an error. Please refer to the node's codes list for details.
 <br/>
 <br/>
 <br/>
@@ -361,12 +359,12 @@ DELETE:contractors/incoming-trust-line
 |Argument|Type|Description
 |---|---|---|
 | Contractor ID | `uint32` | Internal ID of the neighbor node, obtained from the TL List. |
-| Equivalent ID | `uint32` | ID if the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
+| Equivalent ID | `uint32` | ID of the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
 
 This command is used to reject incoming Trust Line from the neigbor node.
 Transaction involves both current node and contractor's node.
-In case if contractor's node does not responds - operation is forced to be done on the current node.
-`todo:` add link to te transaction in source code.
+In case contractor's node does not respond - operation is forced to be done on the current node.
+`todo:` add link to the transaction in source code.
 
 ### Example
 ```
@@ -377,7 +375,7 @@ In case if contractor's node does not responds - operation is forced to be done 
 
 ### Response
 Code 200: OK, operation was performed well. No additional data is provided. <br/>
-Code different than 200 indicates an error. Please, refer to the node's codes list for the details.
+Code different to 200 indicates an error. Please refer to the node's codes list for details.
 <br/>
 <br/>
 <br/>
@@ -391,9 +389,9 @@ GET:contractors/trust-lines/one/id
 |Argument|Type|Description
 |---|---|---|
 | Contractor ID | `uint32` | Internal ID of the neighbor node, obtained from the TL List. |
-| Equivalent ID | `uint32` | ID if the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
+| Equivalent ID | `uint32` | ID of the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
 
-Returns Trust Line with contractor, that has internal id `Contractor ID`
+Returns Trust Line with contractor that has internal id `Contractor ID`
 
 ### Example
 Obtaining TL with a contractor with ID 2 in the equivalent 1:
@@ -410,8 +408,8 @@ Result codes:
 In case of code `200`: <br/>
 * Contractor’s ID
 * State of the TL
-* Indication of your own keys presence
-* Indication of the contractor’s keys presence
+* Indication of your own key presence
+* Indication of the contractor’s key presence
 * Incoming Trust Amount (ITA)
 * Outgoing Trust Amount (OTA)
 * Current Balance (CB)
@@ -433,9 +431,9 @@ GET: contractors/trust-lines/one/address
 
 |Argument|Type|Description|
 |---|---|---|
-| Number of addresses | `uint32` | How many contractors would be list into the command. |
+| Number of addresses | `uint32` | How many contractors will be list in the command. |
 | List of addresses |`list` | List of addresses that are related to the contractor. |
-| Equivalent ID | `uint32` |  ID if the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
+| Equivalent ID | `uint32` |  ID of the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
 
 
 ### Addresses fields
@@ -459,8 +457,8 @@ In case of code `200`: <br/>
 * Contractor’s ID
 * State of the TL
 * State of the TL
-* Indication of your own keys presence
-* Indication of the contractor’s keys presence
+* Indication of your own key presence
+* Indication of the contractor’s key presence
 * Incoming Trust Amount (ITA)
 * Outgoing Trust Amount (OTA)
 * Current Balance (CB)
@@ -483,8 +481,8 @@ GET:contractors
 
 |Argument|Type|Description|
 |---|---|---|
-| Equivalent ID | `uint32` |  ID if the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
-An example of getting the list of contractors command:
+| Equivalent ID | `uint32` |  ID of the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
+An example of getting the list of contractor's command:
 
 Returns information about all nodes, to/from which Trust Lines are present on the current node.
 
@@ -507,7 +505,7 @@ An example of the command result with 3 contractors:
 ```
 13e5cf8c-5834-4e52-b65b-f9281dd1ff91\t200\t3\t0\t1 127:0.0.1:2000\t2\t2 127.0.0.1:2001 127.0.0.1:2002\t5\t1 127.0.0.1:2005\n
 ```
-If the equivalent is 0, then the list of all contractors in all the equivalents will be returned. If not 0, then only those contractors with which there are TLs in this equivalents will be shown. The 0 value is reserved, so it can not be used to denote any particular equivalent.
+If the equivalent is 0, then the list of all contractors in all the equivalents will be returned. If not 0, then only those contractors with which there are TLs in these equivalents will be shown. The 0 value is reserved, so it can not be used to denote any particular equivalent.
 <br/>
 <br/>
 <br/>
@@ -546,17 +544,17 @@ GET:contractors/transactions/max/fully
 
 |Argument|Type|Description|
 |---|---|---|
-| Number of contractors | `uint32` | How many contractors would be list into the command |
+| Number of contractors | `uint32` | How many contractors will be listed in the command |
 | Contractors list |`list` | List of contractors to which max payment flow should be calculated |
 
-### Contractors fields
+### Contractor fields
 |Field|Type|Description|
 |---|---|---|
-| Address type | `enum` | Only IPv4 Addresses are supported at the moment, code 12. |
+| Address type | `enum` | Only IPv4 addresses are supported at the moment, code 12. |
 | Address | `string` | Corresponding address representation. |
-| Equivalent ID | `uint32` |  ID if the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
+| Equivalent ID | `uint32` |  ID of the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
 
-This transaction combines routing algorithm and flow prediciton algorithm and tries to efficiently scan the network topology and to  calculate max. payment flow from the issuer node to each one node, that is listed in arguments. There is no need for direct TLs presence between issuer node and listed nodes: it would be enough if there would exist some paths that are connecting this nodes via some internal nodes. GEO Protocol supports paths that are up to nodes 7 long (icluding command issuer node and the destination node).
+This transaction combines routing algorithm and flow prediction algorithm and tries to efficiently scan the network topology and to  calculate max. payment flow from the issuer node to each single node that is listed in arguments. There is no need for direct TLs presence between issuer node and listed nodes: it will be enough if paths exist that connect these nodes via some internal nodes. GEO Protocol supports paths that are up to 7 nodes long (icluding command issuer node and the destination node).
 
 ### Example
 ```
@@ -566,7 +564,7 @@ This transaction combines routing algorithm and flow prediciton algorithm and tr
 
 ### Response
 Code 200: OK, operation was performed well.<br/>
-Code different than 200 indicates an error. Please, refer to the node's codes list for the details.
+Code different to 200 indicates an error. Please refer to the node's code list for details.
 
 * Number of contractors
 * Vector of payment possibilities
@@ -585,19 +583,19 @@ CREATE:contractors/transactions
 
 |Argument|Type|Description|
 |---|---|---|
-| Number of contractors | `uint32` | How many contractors would be list into the command. |
-| List of contractor addresses |`list` | List of addresses that are related to the contractor (node, that should receive the payment). |
+| Number of contractors | `uint32` | How many contractors will be list in the command. |
+| List of contractor addresses |`list` | List of addresses that are related to the contractor (node that should receive the payment). |
 | Amount | Pos. BigInt | Amount that should be sent to the contractor node. |
-| Equivalent ID | `uint32` |  ID if the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
+| Equivalent ID | `uint32` |  ID of the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
 
 
 ### Addresses fields
 |Field|Type|Description|
 |---|---|---|
-| Address type | `enum` | Only IPv4 Addresses are supported at the moment, code 12. |
+| Address type | `enum` | Only IPv4 addresses are supported at the moment, code 12. |
 | Address | `string` | Corresponding address representation. |
 
-This command initilises payment operation from current node to the contractor. Addresses received in arguments are used for the communication with remote node. Only one address is used at a time. 
+This command initialises payment operation from current node to the contractor. Addresses received in arguments are used for the communication with remote node. Only one address is used at a time. 
 
 ### Example
 ```
@@ -609,12 +607,12 @@ Result codes:
 
 `201` – completed successfully. </br>
 `401` – protocol error (some conditions are not met).</br>
-`409` – consensus has not been reached (some nodes doesn't approved the operation).</br>
-`412` – insufficient payment possibilities (isufficient funds).</br>
+`409` – consensus has not been reached (some nodes haven't approved the operation).</br>
+`412` – insufficient payment possibilities (insufficient funds).</br>
 `444` – the contractor is not reachable (remote node seems to be down).</br>
 `462` – no payment paths (no connection is possible between sender and receiver node).</br>
 </br>
-When receiving the code `201`, the result will also contains `transaction UUID` – UUID4 id of the transaction that was performed.
+When receiving the code `201`, the result will also contain `transaction UUID` – UUID4 id of the transaction that was performed.
 </br>
 </br>
 </br>
@@ -623,7 +621,7 @@ When receiving the code `201`, the result will also contains `transaction UUID` 
 ```
 GET:history/trust-lines
 ```
-Returns list of records, that represents operations that was done with a Trust Line (except payments), for example: amount changes, opening datetime, closing datetime, etc. 
+Returns list of records that represents operations that were performed with a Trust Line (except payments), for example: amount changes, opening datetime, closing datetime, etc. 
 
 |Argument|Type|Description
 |---|---|---|
@@ -661,9 +659,9 @@ The type of operation with TL can be as follows: (`todo` specify ENUM of types)
 * Rejecting Outgoing
 
 The sum is different from zero only in Setting and Updating operations (change of trust), 
-in the rest of the cases it equals 0.
+in all other cases it equals 0.
 
-If the `offset` and the `cuont` parameters will set more operations than the actual number of operations, then the result will only return the existing operations, that meet the command’s criteria.
+If the `offset` and the `cuont` parameters will set more operations than the actual number of operations, then the result will only return the existing operations that meet the command’s criteria.
 
 Example of a history of operations with TLs result (3 operations):
 ```
@@ -689,7 +687,7 @@ GET:history/payments
 | Command UUID | `UUID4` | Filter by command. If not present - must be set to "null". if present - the search is carried out only on it without taking into account other parameters.
 
 ### Example
-An example of the receiving a history of operations with TL command:
+An example of receiving a history of operations with TL command:
 ```
 > echo -e "13e5cf8c-5834-4e52-b65b-f9281dd1ff91\tGET:history/payments\t0\t100\tnull\t1536759923\t500\tnull\tnull\t1\n" > fifo/commands.fifo
 ```
@@ -719,7 +717,7 @@ Example of the history of payments command result (3 operations):
 <br/>
 <br/>
 
-## Transasction: Get History With Contractor
+## Transaction: Get History With Contractor
 ```
 GET:history/contractor
 ```
@@ -734,7 +732,7 @@ Returns a history of TL operations and payments with a contractor that uses ALL 
 | List of ocnt. addresses | `UNIX timestamp` | Filter by the date/time (up to). If not present - must be set to "null".
 | Equivalent ID | `uint32` |  ID if the [equivalent](https://github.com/GEO-Protocol/specs-protocol/blob/master/trust_lines/trust_lines.md#trust-lines-equivalents) in which TL (Trust Line) should be opened: an integer greater than 0. |
 
-### Addresses fields
+### Address fields
 |Field|Type|Description|
 |---|---|---|
 | Address type | `enum` | Only IPv4 Addresses are supported at the moment, code 12. |
