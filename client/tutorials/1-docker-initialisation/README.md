@@ -1,16 +1,16 @@
 
 
-# How to setup docker image of GEO Node
+# How to set up a docker image of a GEO Node
 
-This tutorial provides step-by-step instructions for installing GEO Node from docker hub.
-Please, follow it carefully because this instructions are used as a base phase for all other tutorials provided.
+This tutorial provides step-by-step instructions for installing a GEO Node from Docker Hub.
+Please follow it carefully because these instructions are used as a base for all other tutorials provided.
 
 <br/>
 
-# Step 1: Installing docker
-First of all, you should install docker on your host machine.
-Usually it is provided as OS package for most popular Linux distributions.
-Here are several useful links, that might be helpful in case if your host OS is Linux:
+# Step 1: Installing Docker
+First of all, you should install Docker on your host machine.
+Usually it is provided as an OS package for most popular Linux distributions.
+Here are several useful links that might be helpful in case your host OS is Linux:
 
 * [How To Install and Use Docker on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04)
 * [Get Docker CE for CentOS](https://docs.docker.com/install/linux/docker-ce/centos/)
@@ -18,18 +18,18 @@ Here are several useful links, that might be helpful in case if your host OS is 
 
 <br/>
 
-In case if your host OS is Windows:
+In case your host OS is Windows:
 * [Install Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/install/)
 
 <br/>
 
-In case if your host OS is MacOS:
+In case your host OS is MacOS:
 * [Install Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/install/index.html)
 
 <br/>
 
 # Step 2: Pulling the image
-At the moment of writing this docs, only BETA release of GEO Node is available in docker hub.
+At the time of writing this doccument, the only BETA release of GEO Node is available in Docker Hub.
 
 ```bash
 > sudo docker image pull geoprotocol/network-client-beta
@@ -39,14 +39,14 @@ At the moment of writing this docs, only BETA release of GEO Node is available i
   <img src="https://github.com/GEO-Protocol/Documentation/blob/master/client/tutorials/1-docker-initialisation/resources/1.png">
 </p>
 
-In our case the image is already pulled so docker will only check it and report success.
-In your case, it is most probable, that docker would pull several images and will build the final one on top of them, but the final result would be the same.
+In our case, the image is already pulled so Docker will only check it and report success.
+In your case, it is most probable that Docker would pull several images and will build the final one on top of them, but the final result would be the same.
 
-Current image contains configured node and it's HTTP API wrapper, so no additional configuration is needed.
+The current image contains a configured node and its HTTP API wrapper, so no additional configuration is needed.
 
 **Please, note: your docker conf. might not require using sudo!**
 
-For Windows/Mac instructions please, refer to the [docker documentation](https://docs.docker.com/).
+For Windows/Mac instructions, please refer to the [docker documentation](https://docs.docker.com/).
 
 <br/>
 
@@ -60,27 +60,27 @@ For Windows/Mac instructions please, refer to the [docker documentation](https:/
   <img src="https://github.com/GEO-Protocol/Documentation/blob/master/client/tutorials/1-docker-initialisation/resources/2.png">
 </p>
 
-**Please, note the last parameter: `0.0.0.0`!** <br/>
+**Please note the last parameter: `0.0.0.0`!** <br/>
 This argument specififes the interface on which the node should be available. <br/>
-You should specify this parameter in accordance to your internal network topology. <br/>
-The recommended value for this parameter is `172.17.0.2` if you are planning to run the node in docker's internal network.
+You should specify this parameter in accordance with your internal network topology. <br/>
+The recommended value for this parameter is `172.17.0.2` if you are planning to run the node in Docker's internal network.
 
-In case if there is no host address specififed - the entrypoint script would report an error.
+In case there is no host address specififed, the entrypoint script will report an error.
 
 <p align="center">
   <img src="https://github.com/GEO-Protocol/Documentation/blob/master/client/tutorials/1-docker-initialisation/resources/3.png">
 </p>
 
-WARN: At the moment, current release supports only static IPv4 addresses, so keep it in mind on the network topology design stage.
+WARNING: At the moment, the current release supports only static IPv4 addresses, so keep this in mind at the network topology design stage.
 
 <br/>
 
 # Step 4: Internal container structure
 
-After successfull container launching, the bash session is launched for the development purposes.
-You can use this session to examine internal container filesystem, change some configurations, accessing node's logs, etc.
+After successful container launching, the bash session is launched for development purposes.
+You can use this session to examine internal container filesystem, change certain configurations, access node logs, etc.
 
-The node itself aswell as it's HTTP API wrapper is located in `/node/` volume.
+The node itself as well has its HTTP API wrapper located in `/node/` volume.
 
 The node's logs are located under `/node/client/`.
 
